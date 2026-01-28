@@ -49,6 +49,12 @@ La aplicación se abrirá en [http://localhost:3000](http://localhost:3000)
 ### Modo Producción
 ```bash
 npm run build
+```
+
+El script de build genera automáticamente el service worker con un timestamp único para invalidar el cache correctamente en cada despliegue.
+
+Para servir localmente:
+```bash
 npm install -g serve
 serve -s build
 ```
@@ -164,7 +170,9 @@ PWA/
 ├── public/
 │   ├── index.html
 │   ├── manifest.json
-│   └── service-worker.js
+│   └── service-worker.js          # Generado automáticamente
+├── scripts/
+│   └── generate-sw.js             # Script para generar service worker
 ├── src/
 │   ├── components/
 │   │   ├── FormComponent.tsx       # Componente de formulario tipado
@@ -189,7 +197,7 @@ PWA/
 │   ├── index.tsx                   # Punto de entrada
 │   └── react-app-env.d.ts          # Tipos de React
 ├── tsconfig.json                    # Configuración TypeScript
-├── package.json
+├── package.json                     # Scripts con prebuild para SW
 ├── MIGRATION.md                     # Documentación de migración
 └── README.md
 ```
@@ -204,7 +212,46 @@ PWA/
 6. Desmarca "Offline" para volver online
 7. Haz clic en "Sincronizar" para enviar los datos pendientes
 
-## 📝 Notas
+## � Actualizaciones y Cache
+
+### Service Worker Automático
+- El service worker se genera automáticamente en cada build con timestamp único
+- Cache name: `pwa-offline-form-{timestamp}`
+- Detección automática de nuevas versiones
+- Notificación al usuario para actualizar manualmente
+- **Universal**: Funciona en Vercel, Netlify, servidor propio, Docker, etc.
+
+### Flujo de Actualización
+1. **Nueva versión detectada** → Aparece notificación
+2. **Usuario hace clic en "Actualizar"** → Se instala nueva versión
+3. **Página recarga** → Con la nueva versión activa
+
+### Control del Usuario
+- La actualización requiere acción explícita del usuario
+- No se pierden datos locales durante la actualización
+- El usuario puede continuar trabajando si ignora la notificación
+
+### Despliegue en Cualquier Plataforma
+El sistema de cache busting funciona universalmente:
+
+**Vercel/Netlify (automático):**
+```bash
+git push  # → Build automático → SW único → Deploy
+```
+
+**Servidor propio (manual):**
+```bash
+npm run build  # → genera SW único
+# Subir build/ a tu servidor
+```
+
+**Docker/CI/CD:**
+```dockerfile
+RUN npm run build  # → genera SW único
+CMD ["serve", "-s", "build"]
+```
+
+## �� Notas
 
 - El Service Worker solo funciona en producción o con HTTPS
 - En desarrollo, usa `localhost` para probar funcionalidades PWA
@@ -212,3 +259,4 @@ PWA/
 - La sincronización es manual mediante el botón "Sincronizar"
 - **TypeScript**: El proyecto usa tipado estricto para mayor seguridad
 - Ver `MIGRATION.md` para detalles sobre la migración a TypeScript
+- **Universal**: El sistema de cache busting funciona en cualquier plataforma de despliegue
