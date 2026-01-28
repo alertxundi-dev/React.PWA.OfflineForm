@@ -1,4 +1,9 @@
-const CACHE_NAME = 'pwa-offline-form-1769603397977';
+const fs = require('fs');
+const path = require('path');
+
+const BUILD_TIMESTAMP = Date.now();
+
+const swContent = `const CACHE_NAME = 'pwa-offline-form-${BUILD_TIMESTAMP}';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -70,3 +75,8 @@ self.addEventListener('activate', (event) => {
   );
   self.clients.claim();
 });
+`;
+
+const outputPath = path.join(__dirname, '..', 'public', 'service-worker.js');
+fs.writeFileSync(outputPath, swContent);
+console.log(`Service Worker generated with cache: pwa-offline-form-${BUILD_TIMESTAMP}`);

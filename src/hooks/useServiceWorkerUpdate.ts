@@ -18,6 +18,9 @@ export const useServiceWorkerUpdate = (): UseServiceWorkerUpdateReturn => {
         .register('/service-worker.js')
         .then((registration) => {
           console.log('Service Worker registrado:', registration);
+          console.log('Service Worker activo:', navigator.serviceWorker.controller);
+          console.log('Worker esperando:', registration.waiting);
+          console.log('Worker instalando:', registration.installing);
 
           registration.addEventListener('updatefound', () => {
             const newWorker = registration.installing;
