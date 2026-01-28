@@ -52,7 +52,7 @@ const App: React.FC = () => {
       </main>
 
       <footer className="app-footer">
-        <p>© 2026 PWA Offline Form - Desarrollado con React</p>
+        <p>© 2026 PWA Offline Form</p>
       </footer>
     </div>
   );
