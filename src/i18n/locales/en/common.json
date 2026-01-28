@@ -1,0 +1,43 @@
+﻿{
+  "app": {
+    "title": "Offline Form PWA",
+    "description": "Application with offline support and automatic synchronization",
+    "footer": " 2026 PWA Offline Form"
+  },
+  "sections": {
+    "newForm": "New Form",
+    "storedData": "Stored Data"
+  },
+  "buttons": {
+    "save": "Save",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "clear": "Clear",
+    "refresh": "Refresh",
+    "sync": "Sync"
+  },
+  "status": {
+    "online": "Connected",
+    "offline": "No connection - Offline mode",
+    "syncing": "Syncing...",
+    "saved": "Saved",
+    "error": "Error",
+    "synced": "Synced",
+    "pending": "Pending"
+  },
+  "messages": {
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "noData": "No stored data",
+    "success": "Operation successful",
+    "error": "An error occurred",
+    "networkError": "Connection error",
+    "validationError": "Validation error",
+    "deleteConfirm": "Are you sure you want to delete this record?",
+    "noConnection": "No internet connection. Please connect to sync.",
+    "syncComplete": "Sync completed: {{success}}/{{total}} records sent successfully.",
+    "syncError": "Error during sync: {{error}}"
+  }
+}

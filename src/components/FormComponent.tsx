@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Save, CheckCircle, AlertCircle } from 'lucide-react';
 import { saveFormData } from '../services/indexedDB';
 import { sendFormDataToAPI } from '../services/apiService';
@@ -6,6 +7,9 @@ import { FormData, StatusMessage, FormComponentProps } from '../types';
 import '../styles/FormComponent.css';
 
 const FormComponent: React.FC<FormComponentProps> = ({ isOnline, onFormSaved }) => {
+  const { t } = useTranslation('form');
+  const categories = t('categories', { returnObjects: true }) as Array<{ value: string; label: string }>;
+
   const [formData, setFormData] = useState<FormData>({
     nombre: '',
     apellido: '',
@@ -37,21 +41,21 @@ const FormComponent: React.FC<FormComponentProps> = ({ isOnline, onFormSaved }) 
         if (result.success) {
           setStatus({
             type: 'success',
-            message: '¡Datos enviados a la API exitosamente!'
+            message: t('submitMessages.success')
           });
           setFormData({ nombre: '', apellido: '', email: '', mensaje: '', categoria: 'general' });
         } else {
           await saveFormData(formData);
           setStatus({
             type: 'warning',
-            message: 'Error al enviar a la API. Datos guardados localmente para sincronizar después.'
+            message: t('submitMessages.errorSavedLocal')
           });
         }
       } else {
         await saveFormData(formData);
         setStatus({
           type: 'info',
-          message: 'Sin conexión. Datos guardados localmente. Se sincronizarán cuando vuelvas a estar online.'
+          message: t('submitMessages.savedLocal')
         });
         setFormData({ nombre: '', apellido: '', email: '', mensaje: '', categoria: 'general' });
       }
@@ -73,7 +77,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ isOnline, onFormSaved }) 
     <div className="form-container">
       <form onSubmit={handleSubmit} className="form">
         <div className="form-group">
-          <label htmlFor="nombre">Nombre</label>
+          <label htmlFor="nombre">{t('fields.name')}</label>
           <input
             type="text"
             id="nombre"
@@ -81,12 +85,12 @@ const FormComponent: React.FC<FormComponentProps> = ({ isOnline, onFormSaved }) 
             value={formData.nombre}
             onChange={handleChange}
             required
-            placeholder="Tu nombre"
+            placeholder={t('placeholders.name')}
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="apellido">Apellido</label>
+          <label htmlFor="apellido">{t('fields.lastName')}</label>
           <input
             type="text"
             id="apellido"
@@ -94,12 +98,12 @@ const FormComponent: React.FC<FormComponentProps> = ({ isOnline, onFormSaved }) 
             value={formData.apellido}
             onChange={handleChange}
             required
-            placeholder="Tu apellido"
+            placeholder={t('placeholders.lastName')}
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">{t('fields.email')}</label>
           <input
             type="email"
             id="email"
@@ -107,34 +111,35 @@ const FormComponent: React.FC<FormComponentProps> = ({ isOnline, onFormSaved }) 
             value={formData.email}
             onChange={handleChange}
             required
-            placeholder="tu@email.com"
+            placeholder={t('placeholders.email')}
           />
         </div>
 
         <div className="form-group">
-          <label htmlFor="categoria">Categoría</label>
+          <label htmlFor="categoria">{t('fields.category')}</label>
           <select
             id="categoria"
             name="categoria"
             value={formData.categoria}
             onChange={handleChange}
           >
-            <option value="general">General</option>
-            <option value="soporte">Soporte</option>
-            <option value="ventas">Ventas</option>
-            <option value="feedback">Feedback</option>
+            {categories.map((cat) => (
+              <option key={cat.value} value={cat.value}>
+                {cat.label}
+              </option>
+            ))}
           </select>
         </div>
 
         <div className="form-group">
-          <label htmlFor="mensaje">Mensaje</label>
+          <label htmlFor="mensaje">{t('fields.message')}</label>
           <textarea
             id="mensaje"
             name="mensaje"
             value={formData.mensaje}
             onChange={handleChange}
             required
-            placeholder="Escribe tu mensaje aquí..."
+            placeholder={t('placeholders.message')}
             rows={5}
           />
         </div>
@@ -145,7 +150,7 @@ const FormComponent: React.FC<FormComponentProps> = ({ isOnline, onFormSaved }) 
           disabled={isSubmitting}
         >
           <Save size={20} />
-          {isSubmitting ? 'Guardando...' : 'Guardar'}
+          {isSubmitting ? t('messages.saving', { ns: 'common' }) : t('buttons.save', { ns: 'common' })}
         </button>
       </form>
 

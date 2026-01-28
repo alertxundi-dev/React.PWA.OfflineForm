@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import FormComponent from './components/FormComponent';
 import DataList from './components/DataList';
 import StatusBar from './components/StatusBar';
 import UpdateNotification from './components/UpdateNotification';
+import LanguageSelector from './components/LanguageSelector';
 import { useOnlineStatus } from './hooks/useOnlineStatus';
 import { useServiceWorkerUpdate } from './hooks/useServiceWorkerUpdate';
 import { Database } from 'lucide-react';
 import './styles/App.css';
 
 const App: React.FC = () => {
+  const { t } = useTranslation('common');
   const isOnline = useOnlineStatus();
   const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
   const { newVersionAvailable, updateInstalling, updateServiceWorker, dismissUpdate } = useServiceWorkerUpdate();
@@ -29,14 +32,15 @@ const App: React.FC = () => {
       <StatusBar isOnline={isOnline} />
 
       <header className="app-header">
+        <LanguageSelector />
         <Database size={32} />
-        <h1>PWA Offline Form</h1>
-        <p>Aplicación con soporte offline y sincronización automática</p>
+        <h1>{t('app.title')}</h1>
+        <p>{t('app.description')}</p>
       </header>
 
       <main className="app-main">
         <section className="form-section">
-          <h2>Nuevo Formulario</h2>
+          <h2>{t('sections.newForm')}</h2>
           <FormComponent
             isOnline={isOnline}
             onFormSaved={handleFormSaved}
@@ -52,7 +56,7 @@ const App: React.FC = () => {
       </main>
 
       <footer className="app-footer">
-        <p>© 2026 PWA Offline Form</p>
+        <p>{t('app.footer')}</p>
       </footer>
     </div>
   );

@@ -1,0 +1,43 @@
+﻿{
+  "app": {
+    "title": "Formulario Offline PWA",
+    "description": "Aplicación con soporte offline y sincronización automática",
+    "footer": "© 2026 PWA Offline Form"
+  },
+  "sections": {
+    "newForm": "Nuevo Formulario",
+    "storedData": "Datos Almacenados"
+  },
+  "buttons": {
+    "save": "Guardar",
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "clear": "Limpiar",
+    "refresh": "Actualizar",
+    "sync": "Sincronizar"
+  },
+  "status": {
+    "online": "Conectado",
+    "offline": "Sin conexión - Modo offline",
+    "syncing": "Sincronizando...",
+    "saved": "Guardado",
+    "error": "Error",
+    "synced": "Sincronizado",
+    "pending": "Pendiente"
+  },
+  "messages": {
+    "loading": "Cargando...",
+    "saving": "Guardando...",
+    "noData": "No hay datos almacenados",
+    "success": "Operación exitosa",
+    "error": "Ha ocurrido un error",
+    "networkError": "Error de conexión",
+    "validationError": "Error de validación",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar este registro?",
+    "noConnection": "No hay conexión a internet. Por favor, conéctate para sincronizar.",
+    "syncComplete": "Sincronización completada: {{success}}/{{total}} registros enviados exitosamente.",
+    "syncError": "Error durante la sincronización: {{error}}"
+  }
+}

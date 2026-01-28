@@ -1,0 +1,33 @@
+﻿{
+  "fields": {
+    "name": "Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "category": "Category",
+    "message": "Message",
+    "date": "Date",
+    "syncedAt": "Synced"
+  },
+  "placeholders": {
+    "name": "Your name",
+    "lastName": "Your last name",
+    "email": "your@email.com",
+    "message": "Write your message here..."
+  },
+  "categories": [
+    { "value": "general", "label": "General" },
+    { "value": "soporte", "label": "Support" },
+    { "value": "ventas", "label": "Sales" },
+    { "value": "feedback", "label": "Feedback" }
+  ],
+  "validation": {
+    "required": "This field is required",
+    "email": "Invalid email",
+    "minLength": "Minimum {{min}} characters"
+  },
+  "submitMessages": {
+    "success": "Data sent to API successfully!",
+    "savedLocal": "Offline. Data saved locally. Will sync when you're back online.",
+    "errorSavedLocal": "Error sending to API. Data saved locally to sync later."
+  }
+}

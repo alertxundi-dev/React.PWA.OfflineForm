@@ -1,0 +1,33 @@
+﻿{
+  "fields": {
+    "name": "Nombre",
+    "lastName": "Apellido",
+    "email": "Email",
+    "category": "Categoría",
+    "message": "Mensaje",
+    "date": "Fecha",
+    "syncedAt": "Sincronizado"
+  },
+  "placeholders": {
+    "name": "Tu nombre",
+    "lastName": "Tu apellido",
+    "email": "tu@email.com",
+    "message": "Escribe tu mensaje aquí..."
+  },
+  "categories": [
+    { "value": "general", "label": "General" },
+    { "value": "soporte", "label": "Soporte" },
+    { "value": "ventas", "label": "Ventas" },
+    { "value": "feedback", "label": "Feedback" }
+  ],
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "email": "Email inválido",
+    "minLength": "Mínimo {{min}} caracteres"
+  },
+  "submitMessages": {
+    "success": "¡Datos enviados a la API exitosamente!",
+    "savedLocal": "Sin conexión. Datos guardados localmente. Se sincronizarán cuando vuelvas a estar online.",
+    "errorSavedLocal": "Error al enviar a la API. Datos guardados localmente para sincronizar después."
+  }
+}

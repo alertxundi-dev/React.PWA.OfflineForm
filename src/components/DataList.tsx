@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Trash2, CheckCircle, Clock, RefreshCw } from 'lucide-react';
 import { getAllFormData, deleteFormData, getUnsyncedData, markAsSynced } from '../services/indexedDB';
 import { syncPendingData } from '../services/apiService';
@@ -6,6 +7,7 @@ import { StoredFormData, SyncProgress, DataListProps } from '../types';
 import '../styles/DataList.css';
 
 const DataList: React.FC<DataListProps> = ({ isOnline, refreshTrigger }) => {
+  const { t } = useTranslation(['common', 'form']);
   const [data, setData] = useState<StoredFormData[]>([]);
   const [unsyncedCount, setUnsyncedCount] = useState<number>(0);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
@@ -23,7 +25,7 @@ const DataList: React.FC<DataListProps> = ({ isOnline, refreshTrigger }) => {
   }, [refreshTrigger]);
 
   const handleDelete = async (id: number): Promise<void> => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar este registro?')) {
+    if (window.confirm(t('common:messages.deleteConfirm'))) {
       await deleteFormData(id);
       loadData();
     }
@@ -31,7 +33,7 @@ const DataList: React.FC<DataListProps> = ({ isOnline, refreshTrigger }) => {
 
   const handleSync = async (): Promise<void> => {
     if (!isOnline) {
-      alert('No hay conexión a internet. Por favor, conéctate para sincronizar.');
+      alert(t('common:messages.noConnection'));
       return;
     }
 
@@ -55,11 +57,11 @@ const DataList: React.FC<DataListProps> = ({ isOnline, refreshTrigger }) => {
       }
 
       const successCount = results.filter(r => r.success).length;
-      alert(`Sincronización completada: ${successCount}/${results.length} registros enviados exitosamente.`);
+      alert(t('common:messages.syncComplete', { success: successCount, total: results.length }));
 
       loadData();
     } catch (error) {
-      alert(`Error durante la sincronización: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(t('common:messages.syncError', { error: error instanceof Error ? error.message : 'Unknown error' }));
     } finally {
       setIsSyncing(false);
       setSyncProgress({ current: 0, total: 0 });
@@ -69,7 +71,7 @@ const DataList: React.FC<DataListProps> = ({ isOnline, refreshTrigger }) => {
   return (
     <div className="data-list-container">
       <div className="data-list-header">
-        <h2>Datos Almacenados</h2>
+        <h2>{t('common:sections.storedData')}</h2>
         {unsyncedCount > 0 && (
           <button
             onClick={handleSync}
@@ -78,15 +80,15 @@ const DataList: React.FC<DataListProps> = ({ isOnline, refreshTrigger }) => {
           >
             <RefreshCw size={18} className={isSyncing ? 'spinning' : ''} />
             {isSyncing
-              ? `Sincronizando ${syncProgress.current}/${syncProgress.total}...`
-              : `Sincronizar (${unsyncedCount})`
+              ? `${t('common:status.syncing')} ${syncProgress.current}/${syncProgress.total}`
+              : `${t('common:buttons.sync')} (${unsyncedCount})`
             }
           </button>
         )}
       </div>
 
       {data.length === 0 ? (
-        <p className="no-data">No hay datos almacenados</p>
+        <p className="no-data">{t('common:messages.noData')}</p>
       ) : (
         <div className="data-grid">
           {data.map((item) => (
@@ -96,12 +98,12 @@ const DataList: React.FC<DataListProps> = ({ isOnline, refreshTrigger }) => {
                   {item.synced ? (
                     <>
                       <CheckCircle size={16} className="icon-synced" />
-                      <span>Sincronizado</span>
+                      <span>{t('common:status.synced')}</span>
                     </>
                   ) : (
                     <>
                       <Clock size={16} className="icon-pending" />
-                      <span>Pendiente</span>
+                      <span>{t('common:status.pending')}</span>
                     </>
                   )}
                 </div>
@@ -115,17 +117,17 @@ const DataList: React.FC<DataListProps> = ({ isOnline, refreshTrigger }) => {
               </div>
 
               <div className="card-content">
-                <p><strong>Nombre:</strong> {item.nombre}</p>
-                <p><strong>Apellido:</strong> {item.apellido}</p>
-                <p><strong>Email:</strong> {item.email}</p>
-                <p><strong>Categoría:</strong> {item.categoria}</p>
-                <p><strong>Mensaje:</strong> {item.mensaje}</p>
+                <p><strong>{t('form:fields.name')}:</strong> {item.nombre}</p>
+                <p><strong>{t('form:fields.lastName')}:</strong> {item.apellido}</p>
+                <p><strong>{t('form:fields.email')}:</strong> {item.email}</p>
+                <p><strong>{t('form:fields.category')}:</strong> {item.categoria}</p>
+                <p><strong>{t('form:fields.message')}:</strong> {item.mensaje}</p>
                 <p className="timestamp">
-                  <strong>Fecha:</strong> {new Date(item.timestamp).toLocaleString('es-ES')}
+                  <strong>{t('form:fields.date')}:</strong> {new Date(item.timestamp).toLocaleString()}
                 </p>
                 {item.syncedAt && (
                   <p className="timestamp">
-                    <strong>Sincronizado:</strong> {new Date(item.syncedAt).toLocaleString('es-ES')}
+                    <strong>{t('form:fields.syncedAt')}:</strong> {new Date(item.syncedAt).toLocaleString()}
                   </p>
                 )}
               </div>

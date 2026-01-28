@@ -5,6 +5,7 @@ Una aplicación Progressive Web App (PWA) desarrollada en **React con TypeScript
 ## 🚀 Características
 
 - ✅ **TypeScript**: Tipado estático para mayor seguridad y mantenibilidad
+- ✅ **Multiidioma (i18n)**: Soporte para Español, Inglés y Portugués
 - ✅ **Soporte Offline/Online**: Funciona sin conexión a internet
 - ✅ **IndexedDB**: Almacenamiento local persistente de datos con tipos
 - ✅ **Sincronización Automática**: Envía datos a la API cuando hay conexión
@@ -116,10 +117,83 @@ Content-Type: application/json
 }
 ```
 
+## 🌍 Sistema Multiidioma (i18n)
+
+La aplicación incluye soporte completo para múltiples idiomas utilizando **react-i18next**.
+
+### Idiomas Disponibles
+- 🇪🇸 **Español** (predeterminado)
+- 🇬🇧 **English**
+- 🇵🇹 **Português**
+
+### Características i18n
+- **Selector de idioma**: Ubicado en la esquina superior derecha del header
+- **Persistencia**: El idioma seleccionado se guarda en `localStorage`
+- **Detección automática**: Detecta el idioma del navegador al primer uso
+- **Traducción completa**: Todos los textos de la UI están traducidos
+- **Datos dinámicos**: Categorías del formulario y mensajes traducidos
+- **Interpolación**: Soporte para variables en mensajes (ej: "{{success}}/{{total}}")
+
+### Estructura de Traducciones
+
+```
+src/i18n/
+├── index.ts                    # Configuración de i18next
+└── locales/
+    ├── es/
+    │   ├── common.json         # Textos comunes (botones, mensajes, estado)
+    │   └── form.json           # Textos del formulario (campos, categorías)
+    ├── en/
+    │   ├── common.json
+    │   └── form.json
+    └── pt/
+        ├── common.json
+        └── form.json
+```
+
+### Uso en Componentes
+
+```typescript
+import { useTranslation } from 'react-i18next';
+
+const MyComponent = () => {
+  const { t } = useTranslation('common');
+  
+  return <h1>{t('app.title')}</h1>;
+};
+```
+
+### Agregar Nuevos Idiomas
+
+1. Crea una nueva carpeta en `src/i18n/locales/` (ej: `fr/`)
+2. Copia los archivos `common.json` y `form.json` de otro idioma
+3. Traduce todos los textos
+4. Registra el idioma en `src/i18n/index.ts`:
+```typescript
+import frCommon from './locales/fr/common.json';
+import frForm from './locales/fr/form.json';
+
+const resources = {
+  // ... otros idiomas
+  fr: {
+    common: frCommon,
+    form: frForm
+  }
+};
+```
+5. Agrega la opción en `src/components/LanguageSelector.tsx`:
+```typescript
+const languages = [
+  // ... otros idiomas
+  { code: 'fr', name: 'Français' }
+];
+```
+
 ## 🛠️ Tecnologías Utilizadas
 
 - **React 18**: Framework principal
 - **TypeScript 4.9**: Tipado estático y type safety
+- **react-i18next**: Internacionalización (i18n)
 - **IndexedDB (idb)**: Base de datos local con tipos
 - **Service Worker**: Cache y funcionalidad offline
 - **Lucide React**: Iconos modernos
@@ -130,6 +204,10 @@ Content-Type: application/json
 - `@types/react`: ^18.2.0
 - `@types/react-dom`: ^18.2.0
 - `@types/node`: ^20.0.0
+
+### Dependencias i18n
+- `react-i18next`: ^13.5.0
+- `i18next`: ^23.7.16
 
 ## � Beneficios de TypeScript
 
@@ -163,7 +241,7 @@ interface FormComponentProps {
 }
 ```
 
-## �� Estructura del Proyecto
+## 📁 Estructura del Proyecto
 
 ```
 PWA/
@@ -178,10 +256,23 @@ PWA/
 │   │   ├── FormComponent.tsx       # Componente de formulario tipado
 │   │   ├── DataList.tsx            # Lista de datos con tipos
 │   │   ├── StatusBar.tsx           # Barra de estado tipada
-│   │   └── UpdateNotification.tsx  # Notificación de actualizaciones
+│   │   ├── UpdateNotification.tsx  # Notificación de actualizaciones
+│   │   └── LanguageSelector.tsx    # Selector de idioma
 │   ├── hooks/
 │   │   ├── useOnlineStatus.ts      # Hook de estado online
 │   │   └── useServiceWorkerUpdate.ts # Hook de actualizaciones PWA
+│   ├── i18n/
+│   │   ├── index.ts                # Configuración de i18next
+│   │   └── locales/
+│   │       ├── es/                 # Traducciones en español
+│   │       │   ├── common.json
+│   │       │   └── form.json
+│   │       ├── en/                 # Traducciones en inglés
+│   │       │   ├── common.json
+│   │       │   └── form.json
+│   │       └── pt/                 # Traducciones en portugués
+│   │           ├── common.json
+│   │           └── form.json
 │   ├── services/
 │   │   ├── indexedDB.ts            # Servicio IndexedDB tipado
 │   │   └── apiService.ts           # Servicio API tipado
@@ -190,6 +281,7 @@ PWA/
 │   │   ├── FormComponent.css
 │   │   ├── DataList.css
 │   │   ├── StatusBar.css
+│   │   ├── LanguageSelector.css
 │   │   └── index.css
 │   ├── types/
 │   │   └── index.ts                # Definiciones de tipos e interfaces
@@ -251,12 +343,13 @@ RUN npm run build  # → genera SW único
 CMD ["serve", "-s", "build"]
 ```
 
-## �� Notas
+## 📝 Notas
 
 - El Service Worker solo funciona en producción o con HTTPS
 - En desarrollo, usa `localhost` para probar funcionalidades PWA
 - Los datos en IndexedDB persisten incluso después de cerrar el navegador
 - La sincronización es manual mediante el botón "Sincronizar"
 - **TypeScript**: El proyecto usa tipado estricto para mayor seguridad
+- **i18n**: El idioma seleccionado se guarda en `localStorage` y persiste entre sesiones
 - Ver `MIGRATION.md` para detalles sobre la migración a TypeScript
 - **Universal**: El sistema de cache busting funciona en cualquier plataforma de despliegue
