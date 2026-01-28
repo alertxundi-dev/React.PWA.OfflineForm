@@ -69,7 +69,7 @@ const DataList: React.FC<DataListProps> = ({ isOnline, refreshTrigger }) => {
   return (
     <div className="data-list-container">
       <div className="data-list-header">
-        <h2>Datos Almacenados</h2>
+        <h2>Datos locales almacenados</h2>
         {unsyncedCount > 0 && (
           <button
             onClick={handleSync}
