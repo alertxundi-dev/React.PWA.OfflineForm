@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwa-offline-form-1769605635997';
+const CACHE_NAME = 'pwa-offline-form-1769608550127';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -25,7 +25,7 @@ self.addEventListener('install', (event) => {
         console.log('Cache installation failed:', error);
       })
   );
-  self.skipWaiting();
+  // NO llamar self.skipWaiting() aquí - solo cuando el usuario haga clic en "Actualizar"
 });
 
 self.addEventListener('fetch', (event) => {
@@ -66,7 +66,9 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
+    }).then(() => {
+      // Tomar control de las pestañas después de activarse
+      return self.clients.claim();
     })
   );
-  self.clients.claim();
 });

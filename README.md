@@ -304,6 +304,62 @@ PWA/
 6. Desmarca "Offline" para volver online
 7. Haz clic en "Sincronizar" para enviar los datos pendientes
 
+## 🧪 Probar Actualizaciones del Service Worker en Local
+
+Para probar el flujo de actualización correctamente en local:
+
+### Opción 1: Build de Producción (Recomendada)
+
+```bash
+# 1. Hacer build inicial
+npm run build
+
+# 2. Servir el build (instalar serve si no lo tienes)
+npm install -g serve
+serve -s build -p 5000
+
+# 3. Abrir http://localhost:5000 en el navegador
+```
+
+**Para probar una actualización:**
+
+```bash
+# 1. Hacer un cambio en el código (ej: modificar un texto o traducción)
+# 2. Hacer nuevo build (esto genera un nuevo SW con timestamp único)
+npm run build
+
+# 3. En el navegador (SIN recargar manualmente):
+#    - Espera 10-15 segundos O
+#    - En DevTools → Application → Service Workers → clic en "Update"
+#    - Aparecerá el banner "Nueva versión disponible"
+#    - Haz clic en "Actualizar" para activar la nueva versión
+```
+
+### Opción 2: Desarrollo con npm start
+
+**Importante:** En modo desarrollo (`npm start`), el hot-reload puede interferir con el comportamiento del Service Worker.
+
+Para probar correctamente:
+1. Abre DevTools (F12) → Application → Service Workers
+2. **Desmarca** "Update on reload"
+3. **Desmarca** "Bypass for network"
+
+### Comportamiento Esperado
+
+- ✅ **Nueva versión detectada** → Banner aparece automáticamente
+- ✅ **Usuario hace clic en "Actualizar"** → SW se activa y página recarga
+- ✅ **Usuario ignora el banner** → Sigue usando la versión actual sin interrupciones
+- ❌ **NO se actualiza automáticamente** → Requiere acción explícita del usuario
+
+### Verificación en DevTools
+
+```
+Application → Service Workers:
+- SW actual: "activated and is running" (pwa-offline-form-TIMESTAMP1)
+- Después del build: SW nuevo "waiting to activate" (pwa-offline-form-TIMESTAMP2)
+- Después de clic "Actualizar": SW nuevo "activated" (TIMESTAMP2)
+```
+
 ## � Actualizaciones y Cache
 
 ### Service Worker Automático
@@ -314,14 +370,31 @@ PWA/
 - **Universal**: Funciona en Vercel, Netlify, servidor propio, Docker, etc.
 
 ### Flujo de Actualización
-1. **Nueva versión detectada** → Aparece notificación
-2. **Usuario hace clic en "Actualizar"** → Se instala nueva versión
-3. **Página recarga** → Con la nueva versión activa
+
+**Detección automática:**
+1. El navegador comprueba periódicamente si hay un nuevo `service-worker.js`
+2. Cuando detecta uno nuevo (timestamp diferente), lo descarga e instala
+3. El nuevo SW entra en estado **"waiting"** sin activarse
+4. Aparece el banner: "Nueva versión disponible"
+
+**Activación manual:**
+1. Usuario hace clic en **"Actualizar"**
+2. Se envía mensaje `SKIP_WAITING` al Service Worker
+3. El nuevo SW se activa y toma control
+4. Evento `controllerchange` dispara `window.location.reload()`
+5. La página recarga con la nueva versión activa
+
+**Comportamiento clave:**
+- ✅ **NO hay `self.skipWaiting()` en el evento `install`** del SW
+- ✅ Solo se ejecuta `skipWaiting()` cuando el usuario hace clic
+- ✅ Garantiza que el usuario tiene control total sobre cuándo actualizar
+- ✅ Evita interrupciones inesperadas mientras el usuario trabaja
 
 ### Control del Usuario
-- La actualización requiere acción explícita del usuario
+- La actualización **requiere acción explícita** del usuario (clic en "Actualizar")
 - No se pierden datos locales durante la actualización
 - El usuario puede continuar trabajando si ignora la notificación
+- El nuevo SW permanece en estado "waiting" hasta que el usuario decida actualizar
 
 ### Despliegue en Cualquier Plataforma
 El sistema de cache busting funciona universalmente:
@@ -351,5 +424,7 @@ CMD ["serve", "-s", "build"]
 - La sincronización es manual mediante el botón "Sincronizar"
 - **TypeScript**: El proyecto usa tipado estricto para mayor seguridad
 - **i18n**: El idioma seleccionado se guarda en `localStorage` y persiste entre sesiones
+- **Actualización del SW**: Una recarga manual (F5) detecta nuevas versiones pero NO las activa automáticamente. El usuario debe hacer clic en "Actualizar"
+- **Cambios en traducciones**: Los archivos JSON de i18n se incluyen en el bundle compilado, por lo que cambios en traducciones disparan el flujo de actualización del SW
 - Ver `MIGRATION.md` para detalles sobre la migración a TypeScript
 - **Universal**: El sistema de cache busting funciona en cualquier plataforma de despliegue

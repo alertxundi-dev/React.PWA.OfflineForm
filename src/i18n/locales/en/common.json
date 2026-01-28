@@ -1,8 +1,8 @@
 ﻿{
   "app": {
-    "title": "Offline Form PWA",
+    "title": "Offline Form PWA - v2.0",
     "description": "Application with offline support and automatic synchronization",
-    "footer": " 2026 PWA Offline Form"
+    "footer": "© 2026 PWA Offline Form"
   },
   "sections": {
     "newForm": "New Form",
